@@ -5,12 +5,13 @@ CORE_REF?=master
 CORE_CONFIGURE_FLAGS?=--disable-tests
 SOROBAN_TOOLS_REF?=main
 GO_REF?=$(shell ./scripts/soroban_repo_to_horizon_repo.sh $(SOROBAN_TOOLS_REF))
+GO_COMMIT_REF?=p10
 
 build-deps-core:
 	docker build -t stellar-core:$(TAG) -f docker/Dockerfile.testing https://github.com/anupsdf/stellar-core.git#$(CORE_REF) --build-arg BUILDKIT_CONTEXT_KEEP_GIT_DIR=true --build-arg CONFIGURE_FLAGS="$(CORE_CONFIGURE_FLAGS)"
 
 build-deps-horizon:
-	docker build -t stellar-horizon:$(TAG) -f Dockerfile.horizon --target builder . --build-arg REF="$(GO_REF)"
+	docker build -t stellar-horizon:$(TAG) -f Dockerfile.horizon --target builder . --build-arg REF="$(GO_REF)" --build-arg GO_COMMIT_REF="$(GO_COMMIT_REF)"
 
 build-deps-friendbot:
 	docker build -t stellar-friendbot:$(TAG) -f services/friendbot/docker/Dockerfile https://github.com/stellar/go.git#$(GO_REF)
